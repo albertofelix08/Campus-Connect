@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="campusconnect.controller.DashboardController"
+      spacing="10" style="-fx-padding: 15;">
+
+    <!-- Toolbar row -->
+    <HBox spacing="10">
+        <TextField fx:id="searchField" promptText="Search activities..." prefWidth="300" />
+        <Button text="+ New Activity" onAction="#handleNewActivity" />
+        <Button text="Delete Selected" onAction="#handleDeleteActivity" />
+    </HBox>
+
+    <!-- Activity list inside a scroll pane -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+        <ListView fx:id="activityListView" prefHeight="500" />
+    </ScrollPane>
+
+</VBox>

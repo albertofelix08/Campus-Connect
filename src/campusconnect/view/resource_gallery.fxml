@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="campusconnect.controller.ResourceGalleryController">
+
+    <!-- Main gallery content -->
+    <VBox spacing="10" style="-fx-padding: 15;">
+        <Label text="Resource Gallery" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+        <Label text="Drag a resource card onto an activity in the list below to assign it."
+               style="-fx-text-fill: gray;" />
+
+        <!-- Resource cards in a FlowPane inside a ScrollPane -->
+        <ScrollPane fitToWidth="true" prefHeight="300">
+            <FlowPane fx:id="resourceFlowPane" hgap="15" vgap="15" style="-fx-padding: 10;" />
+        </ScrollPane>
+
+        <Label text="Drop target — select an activity then drag a card onto the list:"
+               style="-fx-font-weight: bold;" />
+
+        <!-- Activity drop target list -->
+        <ListView fx:id="dropTargetList" prefHeight="200" />
+    </VBox>
+
+    <!-- Conflict warning overlay (hidden until a conflict is detected) -->
+    <StackPane fx:id="conflictOverlay"
+               style="-fx-background-color: rgba(0,0,0,0.55);"
+               visible="false">
+        <VBox spacing="12" maxWidth="400"
+              style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 8;">
+            <Label text="⚠  Scheduling Conflict Detected"
+                   style="-fx-font-size: 15; -fx-font-weight: bold; -fx-text-fill: #C0392B;" />
+            <Label fx:id="conflictDetailLabel"
+                   text="This resource is already booked for that date and time slot."
+                   wrapText="true" />
+            <Label text="Please choose a different resource or change the activity's time slot."
+                   wrapText="true" style="-fx-text-fill: #7F8C8D;" />
+            <HBox spacing="10">
+                <Button text="OK, go back" onAction="#handleConflictCancel"
+                        style="-fx-background-color: #C0392B; -fx-text-fill: white;" />
+            </HBox>
+        </VBox>
+    </StackPane>
+
+</StackPane>

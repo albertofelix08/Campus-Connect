@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+
+<!-- StackPane so we can layer the background + the login card -->
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="campusconnect.controller.LoginController"
+           prefWidth="900" prefHeight="600">
+
+    <!-- Background layer (solid color for now) -->
+    <VBox style="-fx-background-color: #2C3E50;" />
+
+    <!-- Login card sitting on top -->
+    <GridPane fx:id="loginCard" hgap="10" vgap="15"
+              style="-fx-background-color: white; -fx-padding: 40; -fx-border-radius: 8; -fx-background-radius: 8;"
+              maxWidth="380" maxHeight="320">
+
+        <Text text="CampusConnect" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-fill: #2C3E50;"
+              GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" />
+
+        <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="usernameField" promptText="Enter username"
+                   GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200" />
+
+        <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <PasswordField fx:id="passwordField" promptText="Enter password"
+                       GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <!-- Error message (hidden until login fails) -->
+        <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;"
+               GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2" />
+
+        <!-- Buttons in an HBox -->
+        <HBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
+            <Button text="Login"  onAction="#handleLogin"  style="-fx-background-color: #2C3E50; -fx-text-fill: white;" />
+            <Button text="Clear"  onAction="#handleClear" />
+        </HBox>
+
+    </GridPane>
+
+</StackPane>

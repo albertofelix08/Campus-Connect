@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="campusconnect.controller.ActivityFormController"
+      spacing="15" style="-fx-padding: 20;">
+
+    <Label text="New / Edit Activity" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+
+    <!-- Main form in a GridPane -->
+    <GridPane hgap="15" vgap="12">
+
+        <Label text="Title:"            GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="titleField"   GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="300" />
+
+        <Label text="Description:"      GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextArea fx:id="descriptionArea" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                  prefWidth="300" prefHeight="80" wrapText="true" />
+
+        <Label text="Category:"         GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <!-- RadioButtons in a VBox -->
+        <VBox spacing="5"               GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <RadioButton fx:id="academicRadio"        text="Academic"         toggleGroup="$categoryGroup" />
+            <RadioButton fx:id="cocurricularRadio"    text="Co-curricular"    toggleGroup="$categoryGroup" />
+            <RadioButton fx:id="extracurricularRadio" text="Extra-curricular" toggleGroup="$categoryGroup" />
+            <RadioButton fx:id="nonAcademicRadio"     text="Non-academic"     toggleGroup="$categoryGroup" />
+            <RadioButton fx:id="otherRadio"           text="Other"            toggleGroup="$categoryGroup" />
+        </VBox>
+
+        <Label text="Date:"             GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <DatePicker fx:id="datePicker"  GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+        <Label text="Time Slot:"        GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <ComboBox fx:id="timeSlotCombo" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="200" />
+
+        <Label text="Venue:"            GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <ComboBox fx:id="venueCombo"    GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="200" />
+
+        <Label text="Coordinator:"      GridPane.columnIndex="0" GridPane.rowIndex="6" />
+        <ComboBox fx:id="coordinatorCombo" GridPane.columnIndex="1" GridPane.rowIndex="6" prefWidth="200" />
+
+        <Label text="Expected Participants:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+        <TextField fx:id="participantsField" GridPane.columnIndex="1" GridPane.rowIndex="7" prefWidth="100" />
+
+        <!-- Facilities as CheckBoxes in a FlowPane -->
+        <Label text="Facilities:"       GridPane.columnIndex="0" GridPane.rowIndex="8" />
+        <FlowPane hgap="10" vgap="5"   GridPane.columnIndex="1" GridPane.rowIndex="8">
+            <CheckBox fx:id="projectorCheck"    text="Projector" />
+            <CheckBox fx:id="micCheck"          text="Mic Set" />
+            <CheckBox fx:id="wifiCheck"         text="Wi-Fi" />
+            <CheckBox fx:id="cateringCheck"     text="Catering" />
+            <CheckBox fx:id="photographyCheck"  text="Photography" />
+        </FlowPane>
+
+    </GridPane>
+
+    <!-- Error label -->
+    <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;" />
+
+    <!-- Action buttons -->
+    <HBox spacing="10">
+        <Button text="Save"   onAction="#handleSave" />
+        <Button text="Cancel" onAction="#handleCancel" />
+    </HBox>
+
+</VBox>

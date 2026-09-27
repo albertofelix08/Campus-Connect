@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<!-- BorderPane is the whole app shell after login -->
+<!-- FIX: Added fx:id="mainShell" so your loadCenterScreen method works -->
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:id="mainShell"
+            fx:controller="campusconnect.controller.DashboardController"
+            prefWidth="1100" prefHeight="680">
+
+    <!-- TOP: MenuBar -->
+    <top>
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem text="New Activity"   onAction="#handleNewActivity" />
+                <SeparatorMenuItem />
+                <MenuItem text="Exit"           onAction="#handleExit" />
+            </Menu>
+            <Menu text="Activity">
+                <MenuItem text="New Activity"   onAction="#handleNewActivity" />
+                <MenuItem text="Approve"        onAction="#handleApproveActivity" />
+                <MenuItem text="Cancel Activity" onAction="#handleDeleteActivity" />
+            </Menu>
+            <Menu text="Resources">
+                <MenuItem text="View Gallery"   onAction="#handleOpenResources" />
+                <MenuItem text="Add Resource"   onAction="#handleAddResource" />
+            </Menu>
+            <Menu text="Reports">
+                <MenuItem text="Open Reports"   onAction="#handleOpenReports" />
+            </Menu>
+            <Menu text="Help">
+                <MenuItem text="About"          onAction="#handleAbout" />
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <!-- LEFT: Navigation sidebar (VBox of buttons) -->
+    <left>
+        <VBox spacing="5" style="-fx-background-color: #34495E; -fx-padding: 10;" prefWidth="160">
+            <Button text="Dashboard"    onAction="#handleNavDashboard"  maxWidth="Infinity" />
+            <Button text="New Activity" onAction="#handleNewActivity"   maxWidth="Infinity" />
+            <Button text="Resources"    onAction="#handleOpenResources" maxWidth="Infinity" />
+            <Button text="Scheduler"    onAction="#handleOpenScheduler" maxWidth="Infinity" />
+            <Button text="Reports"      onAction="#handleOpenReports"   maxWidth="Infinity" />
+        </VBox>
+    </left>
+
+    <!-- CENTER: Swapped out dynamically by controllers -->
+    <center>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <!-- FIX: Added the missing search field that your Java controller expects -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Search Activities:" style="-fx-font-weight: bold;" />
+                <TextField fx:id="searchField" promptText="Type to search..." HBox.hgrow="ALWAYS" />
+            </HBox>
+
+            <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+                <ListView fx:id="activityListView" />
+            </ScrollPane>
+        </VBox>
+    </center>
+
+    <!-- BOTTOM: Status bar -->
+    <bottom>
+        <HBox style="-fx-background-color: #BDC3C7; -fx-padding: 5 10;">
+            <Label fx:id="statusBarLabel" text="Welcome to CampusConnect" />
+        </HBox>
+    </bottom>
+
+</BorderPane>

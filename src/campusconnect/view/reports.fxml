@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="campusconnect.controller.ReportsController"
+      spacing="15" style="-fx-padding: 20;">
+
+    <Label text="Reports" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+
+    <!-- Report type selector -->
+    <HBox spacing="10" style="-fx-alignment: center-left;">
+        <Label text="Report Type:" />
+        <ChoiceBox fx:id="reportTypeChoice" onAction="#handleReportTypeChange" prefWidth="220" />
+    </HBox>
+
+    <!-- Summary strip -->
+    <HBox fx:id="summaryStrip" spacing="30" style="-fx-padding: 10; -fx-background-color: #ECF0F1;">
+        <Label fx:id="summaryLabel1" text="Total: 0" />
+        <Label fx:id="summaryLabel2" text="Approved: 0" />
+        <Label fx:id="summaryLabel3" text="Completed: 0" />
+    </HBox>
+
+    <!-- Report results -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+        <ListView fx:id="reportListView" prefHeight="400" />
+    </ScrollPane>
+
+</VBox>

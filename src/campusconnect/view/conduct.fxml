@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="campusconnect.controller.ConductController"
+      spacing="15" style="-fx-padding: 20;">
+
+    <Label text="Activity Detail / Conduct" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+
+    <!-- Status toggle strip -->
+    <Label text="Status:" />
+    <HBox spacing="8">
+        <ToggleButton fx:id="proposedBtn"   text="Proposed"   toggleGroup="$statusGroup" />
+        <ToggleButton fx:id="approvedBtn"   text="Approved"   toggleGroup="$statusGroup" />
+        <ToggleButton fx:id="ongoingBtn"    text="Ongoing"    toggleGroup="$statusGroup" />
+        <ToggleButton fx:id="completedBtn"  text="Completed"  toggleGroup="$statusGroup" />
+        <ToggleButton fx:id="cancelledBtn"  text="Cancelled"  toggleGroup="$statusGroup" />
+    </HBox>
+
+    <!-- Detail fields -->
+    <GridPane hgap="15" vgap="10">
+        <Label text="Title:"        GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <Label fx:id="titleLabel"   GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <Label text="Category:"     GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Label fx:id="categoryLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Label text="Venue:"        GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <Label fx:id="venueLabel"   GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <Label text="Date:"         GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <Label fx:id="dateLabel"    GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+        <Label text="Coordinator:"  GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <Label fx:id="coordinatorLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+        <Label text="Expected:"     GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <Label fx:id="expectedLabel" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+        <Label text="Actual Attendance:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+        <TextField fx:id="actualAttendanceField" GridPane.columnIndex="1" GridPane.rowIndex="6" prefWidth="120" />
+
+        <Label text="Closing Remarks:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+        <TextArea fx:id="remarksArea"  GridPane.columnIndex="1" GridPane.rowIndex="7"
+                  prefWidth="350" prefHeight="100" wrapText="true" />
+    </GridPane>
+
+    <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;" />
+
+    <HBox spacing="10">
+        <Button text="Save Changes" onAction="#handleSaveChanges" />
+        <Button text="Back"         onAction="#handleBack" />
+    </HBox>
+
+</VBox>
