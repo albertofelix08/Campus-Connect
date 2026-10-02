@@ -59,7 +59,7 @@ public class ReportsController implements Initializable {
             .collect(Collectors.toList());
 
         for (Activity a : sorted) {
-            String line = String.format("%-30s  %-15s  %-12s  %s",
+            String line = String.format("%-30s  %-17s  %-12s  %s",
                 a.getTitle(),
                 a.getCategory() != null ? a.getCategory() : "—",
                 a.getStatus() != null ? a.getStatus() : "—",

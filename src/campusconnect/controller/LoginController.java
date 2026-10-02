@@ -2,6 +2,7 @@ package campusconnect.controller;
 
 import campusconnect.model.User;
 import campusconnect.store.DataStore;
+import campusconnect.ui.Theme;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,7 +45,9 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(root, 1100, 680));
+            Scene shellScene = new Scene(root, 1100, 680);
+            Theme.apply(shellScene);
+            stage.setScene(shellScene);
             stage.setTitle("CampusConnect — " + user.getRole() + ": " + user.getUsername());
             stage.show();
 

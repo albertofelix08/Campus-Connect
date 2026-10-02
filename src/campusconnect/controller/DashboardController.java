@@ -3,6 +3,8 @@ package campusconnect.controller;
 import campusconnect.Navigator;
 import campusconnect.model.Activity;
 import campusconnect.store.DataStore;
+import campusconnect.ui.ActivityCell;
+import campusconnect.ui.Theme;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,6 +29,9 @@ public class DashboardController implements Initializable {
         // Wrap the observable list in a FilteredList so search works live
         filteredActivities = new FilteredList<>(store.getActivities(), a -> true);
         activityListView.setItems(filteredActivities);
+        activityListView.setCellFactory(lv -> new ActivityCell());
+        activityListView.setPlaceholder(Theme.emptyState("No activities found",
+                "Try a different search, or create a new activity."));
 
         // Live search on the text property — also catches paste / cut, not just key releases
         searchField.textProperty().addListener((obs, oldText, newText) -> {
@@ -98,6 +103,7 @@ public class DashboardController implements Initializable {
         confirm.setTitle("Cancel Activity");
         confirm.setHeaderText("Cancel \"" + selected.getTitle() + "\"?");
         confirm.setContentText("This will mark the activity as Cancelled and free up its resource bookings.");
+        Theme.style(confirm);
 
         Optional<ButtonType> result = confirm.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {

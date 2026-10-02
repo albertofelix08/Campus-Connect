@@ -36,20 +36,48 @@
         </MenuBar>
     </top>
 
-    <!-- LEFT: Navigation sidebar (VBox of buttons) -->
+    <!-- LEFT: navigation sidebar -->
     <left>
-        <VBox spacing="5" style="-fx-background-color: #34495E; -fx-padding: 10;" prefWidth="160">
-            <Button text="Dashboard"    onAction="#handleNavDashboard"  maxWidth="Infinity" />
-            <Button text="New Activity" onAction="#handleNewActivity"   maxWidth="Infinity" />
-            <Button text="Resources"    onAction="#handleOpenResources" maxWidth="Infinity" />
-            <Button text="Scheduler"    onAction="#handleOpenScheduler" maxWidth="Infinity" />
-            <Button text="Reports"      onAction="#handleOpenReports"   maxWidth="Infinity" />
+        <VBox styleClass="sidebar" prefWidth="232" minWidth="232">
+
+            <HBox styleClass="brand-row" spacing="10" alignment="CENTER_LEFT">
+                <Label text="CC" styleClass="brand-mark-sm" />
+                <VBox>
+                    <Label text="CampusConnect" styleClass="brand-name" />
+                    <Label text="Polished Edition" styleClass="brand-sub" />
+                </VBox>
+            </HBox>
+
+            <Label text="MENU" styleClass="nav-section" />
+            <Button fx:id="navDashboard"   text="Dashboard"    onAction="#handleNavDashboard"  styleClass="nav-button" maxWidth="Infinity" />
+            <Button fx:id="navNewActivity" text="New Activity" onAction="#handleNewActivity"   styleClass="nav-button" maxWidth="Infinity" />
+            <Button fx:id="navResources"   text="Resources"    onAction="#handleOpenResources" styleClass="nav-button" maxWidth="Infinity" />
+            <Button fx:id="navScheduler"   text="Scheduler"    onAction="#handleOpenScheduler" styleClass="nav-button" maxWidth="Infinity" />
+            <Button fx:id="navReports"     text="Reports"      onAction="#handleOpenReports"   styleClass="nav-button" maxWidth="Infinity" />
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <HBox styleClass="user-block" alignment="CENTER_LEFT">
+                <StackPane styleClass="avatar">
+                    <Label fx:id="avatarLabel" text="?" />
+                </StackPane>
+                <VBox>
+                    <Label fx:id="userNameLabel" text="user" styleClass="user-name" />
+                    <Label fx:id="userRoleLabel" text="role" styleClass="user-role" />
+                </VBox>
+            </HBox>
+
+            <!-- AI disclosure -->
+            <HBox styleClass="ai-note">
+                <Label text="AI" styleClass="ai-badge" />
+                <Label text="Polished with AI assistance" styleClass="ai-note-text" wrapText="true" />
+            </HBox>
         </VBox>
     </left>
 
-    <!-- BOTTOM: Status bar -->
+    <!-- BOTTOM: status bar -->
     <bottom>
-        <HBox style="-fx-background-color: #BDC3C7; -fx-padding: 5 10;">
+        <HBox styleClass="status-bar">
             <Label fx:id="statusBarLabel" text="Welcome to CampusConnect" />
         </HBox>
     </bottom>

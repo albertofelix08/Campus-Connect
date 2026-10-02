@@ -4,6 +4,8 @@ import campusconnect.model.Activity;
 import campusconnect.model.Booking;
 import campusconnect.model.Resource;
 import campusconnect.store.DataStore;
+import campusconnect.ui.ActivityCell;
+import campusconnect.ui.Theme;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -43,34 +45,28 @@ public class ResourceGalleryController implements Initializable {
 
     private VBox createCard(Resource res) {
         VBox card = new VBox(6);
-        card.setStyle(
-            "-fx-background-color: " + cardColor(res.getSubType()) + ";" +
-            "-fx-padding: 12;" +
-            "-fx-border-color: #BDC3C7;" +
-            "-fx-border-radius: 6;" +
-            "-fx-background-radius: 6;" +
-            "-fx-min-width: 150;" +
-            "-fx-max-width: 150;"
-        );
+        card.getStyleClass().add("resource-card");
 
         Label nameLabel    = new Label(res.getName());
-        nameLabel.setStyle("-fx-font-weight: bold; -fx-wrap-text: true;");
+        nameLabel.getStyleClass().add("resource-name");
+        nameLabel.setWrapText(true);
 
         Label subTypeLabel = new Label(res.getSubType());
-        subTypeLabel.setStyle("-fx-text-fill: #7F8C8D; -fx-font-size: 11;");
+        subTypeLabel.getStyleClass().addAll("chip", Theme.resourceClass(res.getSubType()));
 
         // A resource can be booked many times for different slots, so "Booked" is derived
         // from its live bookings instead of being a one-way flag that never resets.
         long active = store.getBookings().stream()
                 .filter(b -> b.isActive() && b.getResource() == res).count();
         Label statusLabel = new Label(active == 0 ? "✓ Available" : "● Booked × " + active);
-        statusLabel.setStyle("-fx-text-fill: " + (active == 0 ? "#27AE60" : "#E67E22") + ";");
+        statusLabel.getStyleClass().add(active == 0 ? "avail-ok" : "avail-busy");
 
         card.getChildren().addAll(nameLabel, subTypeLabel, statusLabel);
 
         // ── Drag source ────────────────────────────────────────────────────
         card.setOnDragDetected((MouseEvent e) -> {
             draggedResource = res;
+            card.getStyleClass().add("dragging");
             Dragboard db = card.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
             content.putString(res.getName()); // put resource name as drag payload
@@ -80,6 +76,7 @@ public class ResourceGalleryController implements Initializable {
 
         card.setOnDragDone((DragEvent e) -> {
             draggedResource = null;
+            card.getStyleClass().remove("dragging");
             e.consume();
         });
 
@@ -90,17 +87,26 @@ public class ResourceGalleryController implements Initializable {
 
     private void populateDropTarget() {
         dropTargetList.setItems(store.getActivities());
+        dropTargetList.setCellFactory(lv -> new ActivityCell());
+        dropTargetList.setPlaceholder(Theme.emptyState("No activities yet", "Create an activity first, then assign resources to it."));
 
         // Accept drag over the list
         dropTargetList.setOnDragOver((DragEvent e) -> {
             if (e.getDragboard().hasString()) {
                 e.acceptTransferModes(TransferMode.MOVE);
+                if (!dropTargetList.getStyleClass().contains("drop-active")) dropTargetList.getStyleClass().add("drop-active");
             }
+            e.consume();
+        });
+
+        dropTargetList.setOnDragExited((DragEvent e) -> {
+            dropTargetList.getStyleClass().remove("drop-active");
             e.consume();
         });
 
         // Handle the drop
         dropTargetList.setOnDragDropped((DragEvent e) -> {
+            dropTargetList.getStyleClass().remove("drop-active");
             Activity target = dropTargetList.getSelectionModel().getSelectedItem();
 
             if (draggedResource == null) {
@@ -149,18 +155,5 @@ public class ResourceGalleryController implements Initializable {
     @FXML
     private void handleConflictCancel() {
         hideOverlay();
-    }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
-    private String cardColor(String subType) {
-        if (subType == null) return "#F2F3F4";
-        switch (subType) {
-            case "Hall":        return "#EBF5FB";
-            case "Equipment":   return "#FEF9E7";
-            case "Coordinator": return "#EAFAF1";
-            case "Volunteer":   return "#FDEDEC";
-            default:            return "#F2F3F4";
-        }
     }
 }

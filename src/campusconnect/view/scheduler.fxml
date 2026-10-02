@@ -5,27 +5,30 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="campusconnect.controller.SchedulerController"
-      spacing="10" style="-fx-padding: 15;">
+      styleClass="page" spacing="14">
 
-    <Label text="Activity Scheduler" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+    <VBox spacing="2">
+        <Label text="Activity Scheduler" styleClass="page-title" />
+        <Label text="A five-day view of every venue, colour-coded by status" styleClass="page-subtitle" />
+    </VBox>
 
     <!-- Filter bar -->
-    <HBox spacing="10" style="-fx-alignment: center-left;">
-        <Label text="Filter by Venue:" />
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Venue" styleClass="field-label" />
         <ComboBox fx:id="venueFilterCombo" onAction="#handleVenueFilter" prefWidth="220" />
         <Region HBox.hgrow="ALWAYS" />
         <Button text="◀ Prev"  onAction="#handlePrev" />
         <Button text="Today"   onAction="#handleToday" />
         <Button text="Next ▶"  onAction="#handleNext" />
-        <Label fx:id="rangeLabel" style="-fx-font-weight: bold;" />
+        <Label fx:id="rangeLabel" styleClass="section-title" />
     </HBox>
 
     <!-- Calendar grid — built dynamically in the controller -->
     <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
-        <GridPane fx:id="calendarGrid" hgap="2" vgap="2" style="-fx-padding: 5;" />
+        <GridPane fx:id="calendarGrid" hgap="4" vgap="4" />
     </ScrollPane>
 
-    <Label text="Tip: Double-click a free cell (+) to create an activity there.  Double-click a booked cell to view its details."
-           style="-fx-text-fill: gray; -fx-font-style: italic;" />
+    <Label text="Tip: double-click a free cell (+) to create an activity there. Double-click a booked cell to view its details."
+           styleClass="hint" />
 
 </VBox>

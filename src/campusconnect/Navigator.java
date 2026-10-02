@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
 import java.time.LocalDate;
+import java.util.function.Consumer;
 
 /**
  * Single place that swaps the centre of the main shell.
@@ -24,6 +25,7 @@ public final class Navigator {
     private static BorderPane shell;
     private static Label statusLabel;
     private static DashboardController dashboard;   // non-null only while the dashboard is on screen
+    private static Consumer<String> navListener;     // lets the sidebar highlight the active screen
 
     private Navigator() {}
 
@@ -40,6 +42,9 @@ public final class Navigator {
     public static DashboardController getDashboard() { return dashboard; }
 
     public static void registerDashboard(DashboardController d) { dashboard = d; }
+
+    /** Called with the FXML file name every time a screen is shown (used for the sidebar highlight). */
+    public static void setNavListener(Consumer<String> listener) { navListener = listener; }
 
     // ── Screens ──────────────────────────────────────────────────────────────
 
@@ -80,6 +85,7 @@ public final class Navigator {
             FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(VIEW + fxml));
             Parent view = loader.load();
             shell.setCenter(view);
+            if (navListener != null) navListener.accept(fxml);
             return loader.getController();
         } catch (Exception e) {
             e.printStackTrace();

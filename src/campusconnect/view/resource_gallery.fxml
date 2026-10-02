@@ -7,39 +7,36 @@
            fx:controller="campusconnect.controller.ResourceGalleryController">
 
     <!-- Main gallery content -->
-    <VBox spacing="10" style="-fx-padding: 15;">
-        <Label text="Resource Gallery" style="-fx-font-size: 18; -fx-font-weight: bold;" />
-        <Label text="Drag a resource card onto an activity in the list below to assign it."
-               style="-fx-text-fill: gray;" />
+    <VBox styleClass="page" spacing="12">
+        <VBox spacing="2">
+            <Label text="Resource Gallery" styleClass="page-title" />
+            <Label text="Drag a resource card onto an activity in the list below to assign it."
+                   styleClass="page-subtitle" />
+        </VBox>
 
         <!-- Resource cards in a FlowPane inside a ScrollPane -->
-        <ScrollPane fitToWidth="true" prefHeight="300">
-            <FlowPane fx:id="resourceFlowPane" hgap="15" vgap="15" style="-fx-padding: 10;" />
+        <ScrollPane fitToWidth="true" prefHeight="270" minHeight="150">
+            <FlowPane fx:id="resourceFlowPane" hgap="14" vgap="14" styleClass="flow-pad" />
         </ScrollPane>
 
-        <Label text="Drop target — select an activity then drag a card onto the list:"
-               style="-fx-font-weight: bold;" />
+        <Label text="Drop target — select an activity, then drag a card onto the list" styleClass="section-title" />
 
         <!-- Activity drop target list -->
-        <ListView fx:id="dropTargetList" prefHeight="200" />
+        <ListView fx:id="dropTargetList" styleClass="activity-list" prefHeight="200" VBox.vgrow="ALWAYS" />
     </VBox>
 
     <!-- Conflict warning overlay (hidden until a conflict is detected) -->
-    <StackPane fx:id="conflictOverlay"
-               style="-fx-background-color: rgba(0,0,0,0.55);"
-               visible="false">
-        <VBox spacing="12" maxWidth="400"
-              style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 8;">
+    <StackPane fx:id="conflictOverlay" styleClass="overlay-scrim" visible="false">
+        <VBox styleClass="modal-card" maxWidth="420" maxHeight="-Infinity">
             <Label fx:id="conflictTitleLabel" text="⚠  Scheduling Conflict Detected"
-                   style="-fx-font-size: 15; -fx-font-weight: bold; -fx-text-fill: #C0392B;" />
+                   styleClass="modal-title-danger" wrapText="true" />
             <Label fx:id="conflictDetailLabel"
                    text="This resource is already booked for that date and time slot."
                    wrapText="true" />
             <Label text="Pick a different resource, or adjust the activity's date / time slot."
-                   wrapText="true" style="-fx-text-fill: #7F8C8D;" />
+                   wrapText="true" styleClass="hint" />
             <HBox spacing="10">
-                <Button text="OK, go back" onAction="#handleConflictCancel"
-                        style="-fx-background-color: #C0392B; -fx-text-fill: white;" />
+                <Button text="OK, go back" onAction="#handleConflictCancel" styleClass="btn-danger" />
             </HBox>
         </VBox>
     </StackPane>

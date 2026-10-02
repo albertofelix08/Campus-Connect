@@ -2,7 +2,9 @@ package campusconnect.controller;
 
 import campusconnect.Navigator;
 import campusconnect.model.Resource;
+import campusconnect.model.User;
 import campusconnect.store.DataStore;
+import campusconnect.ui.Theme;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,12 +24,46 @@ public class ShellController implements Initializable {
     @FXML private BorderPane mainShell;
     @FXML private Label statusBarLabel;
 
+    // Sidebar: nav buttons (for the active highlight) and the logged-in user block
+    @FXML private Button navDashboard;
+    @FXML private Button navNewActivity;
+    @FXML private Button navResources;
+    @FXML private Button navScheduler;
+    @FXML private Button navReports;
+    @FXML private Label  avatarLabel;
+    @FXML private Label  userNameLabel;
+    @FXML private Label  userRoleLabel;
+
     private final DataStore store = DataStore.getInstance();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        User user = store.getCurrentUser();
+        if (user != null) {
+            userNameLabel.setText(user.getUsername());
+            userRoleLabel.setText(user.getRole());
+            avatarLabel.setText(user.getUsername().substring(0, 1).toUpperCase());
+        }
+
         Navigator.init(mainShell, statusBarLabel);
+        Navigator.setNavListener(this::highlightNav);
         Navigator.showDashboard();
+    }
+
+    /** Marks the sidebar button that matches the screen that was just opened. */
+    private void highlightNav(String fxml) {
+        Button active;
+        switch (fxml) {
+            case "activity_form.fxml":    active = navNewActivity; break;
+            case "resource_gallery.fxml": active = navResources;   break;
+            case "scheduler.fxml":        active = navScheduler;   break;
+            case "reports.fxml":          active = navReports;     break;
+            default:                      active = navDashboard;   break;   // dashboard + activity detail
+        }
+        for (Button b : new Button[] { navDashboard, navNewActivity, navResources, navScheduler, navReports }) {
+            b.getStyleClass().remove("active");
+        }
+        active.getStyleClass().add("active");
     }
 
     // ── Navigation ───────────────────────────────────────────────────────────
@@ -76,6 +112,7 @@ public class ShellController implements Initializable {
         grid.addRow(1, new Label("Kind:"), kindChoice);
         grid.addRow(2, new Label("Contact:"), contactField);
         dialog.getDialogPane().setContent(grid);
+        Theme.style(dialog);
 
         ButtonType addType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(addType, ButtonType.CANCEL);
@@ -100,7 +137,9 @@ public class ShellController implements Initializable {
         boolean duplicate = store.getResources().stream()
                 .anyMatch(x -> x.getName().equalsIgnoreCase(r.getName()));
         if (duplicate) {
-            new Alert(Alert.AlertType.WARNING, "A resource named \"" + r.getName() + "\" already exists.").showAndWait();
+            Alert dup = new Alert(Alert.AlertType.WARNING, "A resource named \"" + r.getName() + "\" already exists.");
+            Theme.style(dup);
+            dup.showAndWait();
             return;
         }
         store.getResources().add(r);
@@ -114,8 +153,15 @@ public class ShellController implements Initializable {
     private void handleAbout() {
         Alert about = new Alert(Alert.AlertType.INFORMATION);
         about.setTitle("About CampusConnect");
-        about.setHeaderText("CampusConnect v1.0");
-        about.setContentText("An Integrated Activity Planning, Scheduling and Execution System.\n\nUnit V JavaFX Mini Project\nB.E./B.Tech. Computer Science and Engineering");
+        about.setHeaderText("CampusConnect v1.0 — Polished Edition");
+        about.setContentText("An Integrated Activity Planning, Scheduling and Execution System.\n\n"
+                + "Unit V JavaFX Mini Project\nB.E./B.Tech. Computer Science and Engineering\n\n"
+                + Theme.AI_NOTE + ".\n"
+                + "The main branch is the original hand-built project; this branch shows what the same "
+                + "Java app looks like when AI and modern tooling are used on the interface. "
+                + "The app logic is unchanged.");
+        Theme.style(about);
+        about.getDialogPane().setMinHeight(javafx.scene.layout.Region.USE_PREF_SIZE); // stops long text truncating to "..."
         about.showAndWait();
     }
 
@@ -124,6 +170,7 @@ public class ShellController implements Initializable {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Exit");
         confirm.setContentText("Are you sure you want to exit CampusConnect?");
+        Theme.style(confirm);
         Optional<ButtonType> result = confirm.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             Platform.exit();

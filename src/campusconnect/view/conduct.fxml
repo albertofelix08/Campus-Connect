@@ -5,56 +5,70 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="campusconnect.controller.ConductController"
-      spacing="15" style="-fx-padding: 20;">
+      styleClass="page" spacing="16">
 
+    <!-- Declared explicitly (rather than only referenced via "$statusGroup") so
+         FXMLLoader actually injects it into the controller's @FXML statusGroup field. -->
     <fx:define>
         <ToggleGroup fx:id="statusGroup" />
     </fx:define>
 
-    <Label text="Activity Detail / Conduct" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+    <VBox spacing="2">
+        <Label text="Activity Detail" styleClass="page-title" />
+        <Label text="Move the activity through its lifecycle and record how it went" styleClass="page-subtitle" />
+    </VBox>
 
-    <!-- Status toggle strip -->
-    <Label text="Status:" />
-    <HBox spacing="8">
-        <ToggleButton fx:id="proposedBtn"   text="Proposed"   toggleGroup="$statusGroup" />
-        <ToggleButton fx:id="approvedBtn"   text="Approved"   toggleGroup="$statusGroup" />
-        <ToggleButton fx:id="ongoingBtn"    text="Ongoing"    toggleGroup="$statusGroup" />
-        <ToggleButton fx:id="completedBtn"  text="Completed"  toggleGroup="$statusGroup" />
-        <ToggleButton fx:id="cancelledBtn"  text="Cancelled"  toggleGroup="$statusGroup" />
-    </HBox>
+    <!-- Status segmented control -->
+    <VBox spacing="8">
+        <Label text="Status" styleClass="field-label" />
+        <HBox spacing="0">
+            <ToggleButton fx:id="proposedBtn"  text="Proposed"  toggleGroup="$statusGroup" styleClass="segment, segment-first, s-proposed" />
+            <ToggleButton fx:id="approvedBtn"  text="Approved"  toggleGroup="$statusGroup" styleClass="segment, s-approved" />
+            <ToggleButton fx:id="ongoingBtn"   text="Ongoing"   toggleGroup="$statusGroup" styleClass="segment, s-ongoing" />
+            <ToggleButton fx:id="completedBtn" text="Completed" toggleGroup="$statusGroup" styleClass="segment, s-completed" />
+            <ToggleButton fx:id="cancelledBtn" text="Cancelled" toggleGroup="$statusGroup" styleClass="segment, segment-last, s-cancelled" />
+        </HBox>
+    </VBox>
 
-    <!-- Detail fields -->
-    <GridPane hgap="15" vgap="10">
-        <Label text="Title:"        GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <Label fx:id="titleLabel"   GridPane.columnIndex="1" GridPane.rowIndex="0" />
+    <!-- Detail card -->
+    <VBox styleClass="card">
+        <GridPane hgap="20" vgap="12">
+            <columnConstraints>
+                <ColumnConstraints minWidth="170" prefWidth="170" />
+                <ColumnConstraints hgrow="ALWAYS" />
+            </columnConstraints>
 
-        <Label text="Category:"     GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <Label fx:id="categoryLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Title"        styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label fx:id="titleLabel"  styleClass="value-strong" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        <Label text="Venue:"        GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <Label fx:id="venueLabel"   GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Category"     styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label fx:id="categoryLabel" styleClass="value-label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-        <Label text="Date:"         GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <Label fx:id="dateLabel"    GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Venue"        styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label fx:id="venueLabel"  styleClass="value-label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-        <Label text="Coordinator:"  GridPane.columnIndex="0" GridPane.rowIndex="4" />
-        <Label fx:id="coordinatorLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Date"         styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <Label fx:id="dateLabel"   styleClass="value-label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-        <Label text="Expected:"     GridPane.columnIndex="0" GridPane.rowIndex="5" />
-        <Label fx:id="expectedLabel" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label text="Coordinator"  styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <Label fx:id="coordinatorLabel" styleClass="value-label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-        <Label text="Actual Attendance:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-        <TextField fx:id="actualAttendanceField" GridPane.columnIndex="1" GridPane.rowIndex="6" prefWidth="120" />
+            <Label text="Expected"     styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <Label fx:id="expectedLabel" styleClass="value-label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-        <Label text="Closing Remarks:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-        <TextArea fx:id="remarksArea"  GridPane.columnIndex="1" GridPane.rowIndex="7"
-                  prefWidth="350" prefHeight="100" wrapText="true" />
-    </GridPane>
+            <Label text="Actual attendance" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+            <TextField fx:id="actualAttendanceField" GridPane.columnIndex="1" GridPane.rowIndex="6" prefWidth="120" maxWidth="120" />
 
-    <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;" />
+            <Label text="Closing remarks" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+            <TextArea fx:id="remarksArea" GridPane.columnIndex="1" GridPane.rowIndex="7"
+                      prefWidth="420" maxWidth="520" prefHeight="90" wrapText="true" />
+        </GridPane>
+    </VBox>
+
+    <Label fx:id="errorLabel" text="" styleClass="error-text" wrapText="true" />
 
     <HBox spacing="10">
-        <Button text="Save Changes" onAction="#handleSaveChanges" />
+        <Button text="Save Changes" onAction="#handleSaveChanges" styleClass="btn-primary" />
         <Button text="Back"         onAction="#handleBack" />
     </HBox>
 

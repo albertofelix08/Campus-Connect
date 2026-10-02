@@ -156,7 +156,8 @@ public class ConductController implements Initializable {
     }
 
     private void showMessage(String text, boolean success) {
-        errorLabel.setStyle("-fx-text-fill: " + (success ? "#27AE60" : "red") + ";");
+        errorLabel.getStyleClass().removeAll("error-text", "success-text");
+        errorLabel.getStyleClass().add(success ? "success-text" : "error-text");
         errorLabel.setText(text);
     }
 }

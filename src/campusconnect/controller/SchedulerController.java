@@ -3,8 +3,10 @@ package campusconnect.controller;
 import campusconnect.Navigator;
 import campusconnect.model.Activity;
 import campusconnect.store.DataStore;
+import campusconnect.ui.Theme;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -70,21 +72,25 @@ public class SchedulerController implements Initializable {
         calendarGrid.getRowConstraints().clear();
 
         // Column constraints — first col is labels, rest are days
-        calendarGrid.getColumnConstraints().add(new ColumnConstraints(120));
+        // Label column is fixed; day columns share whatever width is left, so all five days always fit.
+        calendarGrid.getColumnConstraints().add(new ColumnConstraints(112));
         for (int d = 0; d < DAYS_SHOWN; d++) {
-            calendarGrid.getColumnConstraints().add(new ColumnConstraints(160));
+            ColumnConstraints day = new ColumnConstraints(100, 150, Double.MAX_VALUE);
+            day.setHgrow(Priority.ALWAYS);
+            calendarGrid.getColumnConstraints().add(day);
         }
 
         // Header row — day names + dates
         Label cornerLabel = new Label("Time / Day");
-        cornerLabel.setStyle("-fx-font-weight: bold; -fx-padding: 5;");
+        cornerLabel.getStyleClass().add("cal-header");
         calendarGrid.add(cornerLabel, 0, 0);
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEE dd/MM");
         for (int d = 0; d < DAYS_SHOWN; d++) {
             LocalDate day = startDate.plusDays(d);
             Label dayHeader = new Label(day.format(fmt));
-            dayHeader.setStyle("-fx-font-weight: bold; -fx-padding: 5; -fx-alignment: center;");
+            dayHeader.getStyleClass().add("cal-header");
+            if (day.equals(LocalDate.now())) dayHeader.getStyleClass().add("today");
             dayHeader.setMaxWidth(Double.MAX_VALUE);
             calendarGrid.add(dayHeader, d + 1, 0);
         }
@@ -94,7 +100,7 @@ public class SchedulerController implements Initializable {
             final String slot = TIME_SLOTS[r];
 
             Label slotLabel = new Label(slot);
-            slotLabel.setStyle("-fx-padding: 5; -fx-font-size: 11;");
+            slotLabel.getStyleClass().add("cal-slot");
             calendarGrid.add(slotLabel, 0, r + 1);
 
             for (int d = 0; d < DAYS_SHOWN; d++) {
@@ -107,8 +113,10 @@ public class SchedulerController implements Initializable {
 
     private StackPane buildCell(List<Activity> activities, LocalDate date, String slot, String venueFilter) {
         StackPane cell = new StackPane();
-        cell.setMinSize(150, 50);
+        cell.setMinSize(100, 50);
         cell.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        cell.getStyleClass().add("cal-cell");
+        if (date.equals(LocalDate.now())) cell.getStyleClass().add("today");
 
         if (!activities.isEmpty()) {
             // Occupied cell — every activity in this slot is listed (two venues can run in parallel;
@@ -117,12 +125,13 @@ public class SchedulerController implements Initializable {
             for (Activity a : activities) {
                 VBox entry = new VBox(1);
                 Label title = new Label(a.getTitle());
-                title.setStyle("-fx-wrap-text: true; -fx-font-size: 11; -fx-font-weight: bold;");
-                title.setMaxWidth(145);
+                title.getStyleClass().add("cal-title");
+                title.setWrapText(true);
+                title.setMaxWidth(Double.MAX_VALUE);
                 entry.getChildren().add(title);
                 if (venueFilter == null && a.getVenue() != null) {
                     Label venue = new Label(a.getVenue());
-                    venue.setStyle("-fx-font-size: 10; -fx-text-fill: #34495E;");
+                    venue.getStyleClass().add("cal-venue");
                     entry.getChildren().add(venue);
                 }
                 entry.setOnMouseClicked((MouseEvent e) -> {
@@ -130,16 +139,18 @@ public class SchedulerController implements Initializable {
                 });
                 box.getChildren().add(entry);
             }
-            box.setStyle("-fx-padding: 4;");
+            box.setPadding(new javafx.geometry.Insets(6));
             cell.getChildren().add(box);
-            cell.setStyle("-fx-background-color: #AED6F1; -fx-border-color: #85C1E9; -fx-border-width: 1;");
+            cell.setAlignment(Pos.TOP_LEFT);
+            // tint the whole cell with the (first) activity's status colour
+            cell.getStyleClass().addAll("cal-cell-booked", Theme.statusClass(activities.get(0).getStatus()));
 
         } else {
             // Free cell — double-click to create a new activity in this slot
             Label freeLabel = new Label("+");
-            freeLabel.setStyle("-fx-text-fill: #BDC3C7; -fx-font-size: 18;");
+            freeLabel.getStyleClass().add("cal-plus");
             cell.getChildren().add(freeLabel);
-            cell.setStyle("-fx-background-color: #FDFEFE; -fx-border-color: #D5D8DC; -fx-border-width: 1;");
+            cell.getStyleClass().add("cal-cell-free");
 
             cell.setOnMouseClicked((MouseEvent e) -> {
                 if (e.getClickCount() == 2) Navigator.showNewActivity(date, slot, venueFilter);

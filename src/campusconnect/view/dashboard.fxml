@@ -5,16 +5,22 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="campusconnect.controller.DashboardController"
-      spacing="10" style="-fx-padding: 15;">
+      styleClass="page" spacing="16">
 
-    <!-- Toolbar row -->
-    <HBox spacing="10">
-        <TextField fx:id="searchField" promptText="Search activities..." prefWidth="300" HBox.hgrow="SOMETIMES" />
-        <Button text="+ New Activity" onAction="#handleNewActivity" />
-        <Button text="Cancel Selected" onAction="#handleCancelActivity" />
+    <!-- Header row: title on the left, actions on the right -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <VBox spacing="2">
+            <Label text="Dashboard" styleClass="page-title" />
+            <Label text="Plan, track and approve campus activities" styleClass="page-subtitle" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="+ New Activity"   onAction="#handleNewActivity"    styleClass="btn-primary" />
+        <Button text="Cancel Selected"  onAction="#handleCancelActivity"  styleClass="btn-danger-outline" />
     </HBox>
 
+    <TextField fx:id="searchField" promptText="Search by title, category, status or venue..." />
+
     <!-- ListView scrolls by itself; wrapping it in a ScrollPane gave a fixed-height list with nested scrollbars -->
-    <ListView fx:id="activityListView" VBox.vgrow="ALWAYS" />
+    <ListView fx:id="activityListView" styleClass="activity-list" VBox.vgrow="ALWAYS" />
 
 </VBox>

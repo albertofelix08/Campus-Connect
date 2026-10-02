@@ -2,42 +2,44 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
 
-<!-- StackPane so we can layer the background + the login card -->
+<!-- Gradient backdrop with a centred card. All colours/spacing live in theme.css. -->
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="campusconnect.controller.LoginController"
+           styleClass="login-bg"
            prefWidth="900" prefHeight="600">
 
-    <!-- Background layer (solid color for now) -->
-    <VBox style="-fx-background-color: #2C3E50;" />
+    <VBox fx:id="loginCard" styleClass="login-card"
+          prefWidth="400" maxWidth="400" maxHeight="-Infinity">
 
-    <!-- Login card sitting on top -->
-    <GridPane fx:id="loginCard" hgap="10" vgap="15"
-              style="-fx-background-color: white; -fx-padding: 40; -fx-border-radius: 8; -fx-background-radius: 8;"
-              maxWidth="380" maxHeight="320">
+        <Label text="CC" styleClass="brand-mark" />
+        <Label text="CampusConnect" styleClass="login-title" />
+        <Label text="Activity planning, scheduling and execution" styleClass="login-subtitle" />
 
-        <Text text="CampusConnect" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-fill: #2C3E50;"
-              GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" />
+        <Label text="Username" styleClass="field-label">
+            <VBox.margin><javafx.geometry.Insets top="18" /></VBox.margin>
+        </Label>
+        <TextField fx:id="usernameField" promptText="Enter username" />
 
-        <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <TextField fx:id="usernameField" promptText="Enter username"
-                   GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200" />
+        <Label text="Password" styleClass="field-label">
+            <VBox.margin><javafx.geometry.Insets top="8" /></VBox.margin>
+        </Label>
+        <PasswordField fx:id="passwordField" promptText="Enter password" />
 
-        <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <PasswordField fx:id="passwordField" promptText="Enter password"
-                       GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <!-- Error message (empty until login fails) -->
+        <Label fx:id="errorLabel" text="" styleClass="error-text" wrapText="true" minHeight="20" />
 
-        <!-- Error message (hidden until login fails) -->
-        <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;"
-               GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2" />
-
-        <!-- Buttons in an HBox -->
-        <HBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
-            <Button text="Login"  onAction="#handleLogin"  defaultButton="true" style="-fx-background-color: #2C3E50; -fx-text-fill: white;" />
-            <Button text="Clear"  onAction="#handleClear" />
+        <HBox spacing="10">
+            <Button text="Sign in" onAction="#handleLogin" defaultButton="true"
+                    styleClass="btn-primary" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+            <Button text="Clear" onAction="#handleClear" />
         </HBox>
 
-    </GridPane>
+        <!-- AI disclosure -->
+        <HBox styleClass="login-footer">
+            <Label text="AI" styleClass="ai-badge" />
+            <Label text="Polished with AI assistance" styleClass="hint" />
+        </HBox>
+    </VBox>
 
 </StackPane>
