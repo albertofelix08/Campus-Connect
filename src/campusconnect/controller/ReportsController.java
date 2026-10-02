@@ -30,14 +30,14 @@ public class ReportsController implements Initializable {
             "Participation Summary"
         );
 
-        // Show first report by default
-        reportTypeChoice.setValue("Activity Calendar");
-        showActivityCalendar();
-
-        // Switch report when ChoiceBox changes
+        // Switch report when ChoiceBox changes. (This listener is the only trigger now: the FXML
+        // also had onAction wired to the same method, so every change rendered the report twice.)
         reportTypeChoice.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldVal, newVal) -> handleReportTypeChange()
         );
+
+        // Show first report by default — setValue fires the listener above
+        reportTypeChoice.setValue("Activity Calendar");
     }
 
     @FXML
@@ -62,7 +62,7 @@ public class ReportsController implements Initializable {
             String line = String.format("%-30s  %-15s  %-12s  %s",
                 a.getTitle(),
                 a.getCategory() != null ? a.getCategory() : "—",
-                a.getStatus(),
+                a.getStatus() != null ? a.getStatus() : "—",
                 a.getDate() != null ? a.getDate().toString() : "No date"
             );
             reportListView.getItems().add(line);
@@ -85,6 +85,7 @@ public class ReportsController implements Initializable {
             bookingCounts.put(r.getName(), 0L);
         }
         for (Booking b : store.getBookings()) {
+            if (!b.isActive() || b.getResource() == null) continue;   // cancelled activities free their resources
             String name = b.getResource().getName();
             bookingCounts.put(name, bookingCounts.getOrDefault(name, 0L) + 1);
         }
@@ -94,7 +95,7 @@ public class ReportsController implements Initializable {
             reportListView.getItems().add(line);
         });
 
-        long totalBookings = store.getBookings().size();
+        long totalBookings = store.getBookings().stream().filter(Booking::isActive).count();
         long usedResources = bookingCounts.values().stream().filter(c -> c > 0).count();
 
         summaryLabel1.setText("Total Resources: " + store.getResources().size());

@@ -7,7 +7,11 @@
       fx:controller="campusconnect.controller.ActivityFormController"
       spacing="15" style="-fx-padding: 20;">
 
-    <Label text="New / Edit Activity" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+    <fx:define>
+        <ToggleGroup fx:id="categoryGroup" />
+    </fx:define>
+
+    <Label fx:id="formTitleLabel" text="New Activity" style="-fx-font-size: 18; -fx-font-weight: bold;" />
 
     <!-- Main form in a GridPane -->
     <GridPane hgap="15" vgap="12">

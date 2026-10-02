@@ -34,7 +34,7 @@
 
         <!-- Buttons in an HBox -->
         <HBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
-            <Button text="Login"  onAction="#handleLogin"  style="-fx-background-color: #2C3E50; -fx-text-fill: white;" />
+            <Button text="Login"  onAction="#handleLogin"  defaultButton="true" style="-fx-background-color: #2C3E50; -fx-text-fill: white;" />
             <Button text="Clear"  onAction="#handleClear" />
         </HBox>
 

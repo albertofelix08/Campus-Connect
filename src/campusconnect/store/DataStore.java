@@ -51,18 +51,21 @@ public class DataStore {
         // Activities
         Activity a1 = new Activity("Annual Technical Conference", "Co-curricular", LocalDate.now().plusDays(10));
         a1.setVenue("Main Auditorium");
+        a1.setTimeSlot("09:00 - 13:00");
         a1.setCoordinator("Dr. Priya");
         a1.setExpectedParticipants(200);
         a1.setStatus("Approved");
 
         Activity a2 = new Activity("Python Workshop", "Academic", LocalDate.now().plusDays(5));
         a2.setVenue("Seminar Hall B");
+        a2.setTimeSlot("14:00 - 17:00");
         a2.setCoordinator("Prof. Ramesh");
         a2.setExpectedParticipants(60);
         a2.setStatus("Proposed");
 
-        Activity a3 = new Activity("Cultural Fest 2024", "Extra-curricular", LocalDate.now().plusDays(20));
+        Activity a3 = new Activity("Cultural Fest", "Extra-curricular", LocalDate.now().plusDays(20));
         a3.setVenue("Open Air Theatre");
+        a3.setTimeSlot("09:00 - 17:00");
         a3.setCoordinator("Student Council");
         a3.setExpectedParticipants(500);
         a3.setStatus("Proposed");
@@ -90,6 +93,19 @@ public class DataStore {
             if (b.conflictsWith(res, date, slot)) return true;
         }
         return false;
+    }
+
+    // --- Venue clash check for activities (ignores the activity being edited and cancelled ones) ---
+    public Activity findVenueConflict(Activity self, String venue, LocalDate date, String slot) {
+        if (venue == null || date == null || slot == null) return null;
+        for (Activity a : activities) {
+            if (a == self || "Cancelled".equals(a.getStatus())) continue;
+            if (venue.equals(a.getVenue()) && date.equals(a.getDate())
+                    && Booking.slotsOverlap(a.getTimeSlot(), slot)) {
+                return a;
+            }
+        }
+        return null;
     }
 
     // --- Getters ---

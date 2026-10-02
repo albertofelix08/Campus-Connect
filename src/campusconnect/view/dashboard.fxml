@@ -9,14 +9,12 @@
 
     <!-- Toolbar row -->
     <HBox spacing="10">
-        <TextField fx:id="searchField" promptText="Search activities..." prefWidth="300" />
+        <TextField fx:id="searchField" promptText="Search activities..." prefWidth="300" HBox.hgrow="SOMETIMES" />
         <Button text="+ New Activity" onAction="#handleNewActivity" />
-        <Button text="Delete Selected" onAction="#handleDeleteActivity" />
+        <Button text="Cancel Selected" onAction="#handleCancelActivity" />
     </HBox>
 
-    <!-- Activity list inside a scroll pane -->
-    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-        <ListView fx:id="activityListView" prefHeight="500" />
-    </ScrollPane>
+    <!-- ListView scrolls by itself; wrapping it in a ScrollPane gave a fixed-height list with nested scrollbars -->
+    <ListView fx:id="activityListView" VBox.vgrow="ALWAYS" />
 
 </VBox>

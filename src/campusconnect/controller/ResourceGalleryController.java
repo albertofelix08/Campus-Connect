@@ -6,11 +6,9 @@ import campusconnect.model.Resource;
 import campusconnect.store.DataStore;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
-import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,15 +17,16 @@ public class ResourceGalleryController implements Initializable {
 
     @FXML private FlowPane resourceFlowPane;
     @FXML private StackPane conflictOverlay;
+    @FXML private Label     conflictTitleLabel;
     @FXML private Label     conflictDetailLabel;
     @FXML private ListView<Activity> dropTargetList;
 
-    private DataStore store = DataStore.getInstance();
-    private Resource  draggedResource = null;  // track what's being dragged
+    private final DataStore store = DataStore.getInstance();
+    private Resource draggedResource = null;  // track what's being dragged
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        conflictOverlay.setVisible(false);
+        hideOverlay();
         buildResourceCards();
         populateDropTarget();
     }
@@ -38,8 +37,7 @@ public class ResourceGalleryController implements Initializable {
         resourceFlowPane.getChildren().clear();
 
         for (Resource res : store.getResources()) {
-            VBox card = createCard(res);
-            resourceFlowPane.getChildren().add(card);
+            resourceFlowPane.getChildren().add(createCard(res));
         }
     }
 
@@ -61,12 +59,16 @@ public class ResourceGalleryController implements Initializable {
         Label subTypeLabel = new Label(res.getSubType());
         subTypeLabel.setStyle("-fx-text-fill: #7F8C8D; -fx-font-size: 11;");
 
-        Label statusLabel  = new Label(res.isAvailable() ? "✓ Available" : "✗ Booked");
-        statusLabel.setStyle("-fx-text-fill: " + (res.isAvailable() ? "#27AE60" : "#E74C3C") + ";");
+        // A resource can be booked many times for different slots, so "Booked" is derived
+        // from its live bookings instead of being a one-way flag that never resets.
+        long active = store.getBookings().stream()
+                .filter(b -> b.isActive() && b.getResource() == res).count();
+        Label statusLabel = new Label(active == 0 ? "✓ Available" : "● Booked × " + active);
+        statusLabel.setStyle("-fx-text-fill: " + (active == 0 ? "#27AE60" : "#E67E22") + ";");
 
         card.getChildren().addAll(nameLabel, subTypeLabel, statusLabel);
 
-        // ── Drag source (MouseEvent: drag detected) ────────────────────────
+        // ── Drag source ────────────────────────────────────────────────────
         card.setOnDragDetected((MouseEvent e) -> {
             draggedResource = res;
             Dragboard db = card.startDragAndDrop(TransferMode.MOVE);
@@ -100,25 +102,29 @@ public class ResourceGalleryController implements Initializable {
         // Handle the drop
         dropTargetList.setOnDragDropped((DragEvent e) -> {
             Activity target = dropTargetList.getSelectionModel().getSelectedItem();
-            if (target == null || draggedResource == null) {
-                e.setDropCompleted(false);
-                e.consume();
-                return;
-            }
 
-            // Check for conflict before allocating
-            if (store.hasConflict(draggedResource, target.getDate(), target.getTimeSlot())) {
-                conflictDetailLabel.setText(
+            if (draggedResource == null) {
+                e.setDropCompleted(false);
+            } else if (target == null) {
+                showOverlay("Select an activity first",
+                        "Click an activity in the list, then drag the resource card onto it.");
+                e.setDropCompleted(false);
+            } else if ("Cancelled".equals(target.getStatus())) {
+                showOverlay("Activity is cancelled", "Resources can't be assigned to a cancelled activity.");
+                e.setDropCompleted(false);
+            } else if (target.getDate() == null || target.getTimeSlot() == null) {
+                // Without a date + slot there is nothing to check for conflicts against
+                showOverlay("Missing date or time slot",
+                        "\"" + target.getTitle() + "\" needs a date and a time slot before resources can be assigned. Edit the activity first.");
+                e.setDropCompleted(false);
+            } else if (store.hasConflict(draggedResource, target.getDate(), target.getTimeSlot())) {
+                showOverlay("⚠  Scheduling Conflict Detected",
                     "\"" + draggedResource.getName() + "\" is already booked for " +
-                    target.getDate() + " at " + target.getTimeSlot() + "."
-                );
-                conflictOverlay.setVisible(true);
+                    target.getDate() + " at a time overlapping " + target.getTimeSlot() + ".");
                 e.setDropCompleted(false);
             } else {
                 // All clear — create the booking
-                Booking booking = new Booking(draggedResource, target, target.getDate(), target.getTimeSlot());
-                store.getBookings().add(booking);
-                draggedResource.setAvailable(false);
+                store.getBookings().add(new Booking(draggedResource, target, target.getDate(), target.getTimeSlot()));
                 buildResourceCards(); // refresh cards to show new status
                 e.setDropCompleted(true);
             }
@@ -126,22 +132,35 @@ public class ResourceGalleryController implements Initializable {
         });
     }
 
-    // ── Conflict overlay buttons ───────────────────────────────────────────────
+    // ── Overlay ───────────────────────────────────────────────────────────────
+
+    private void showOverlay(String title, String detail) {
+        conflictTitleLabel.setText(title);
+        conflictDetailLabel.setText(detail);
+        conflictOverlay.setVisible(true);
+        conflictOverlay.setManaged(true);
+    }
+
+    private void hideOverlay() {
+        conflictOverlay.setVisible(false);
+        conflictOverlay.setManaged(false);
+    }
 
     @FXML
     private void handleConflictCancel() {
-        conflictOverlay.setVisible(false);
+        hideOverlay();
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private String cardColor(String subType) {
+        if (subType == null) return "#F2F3F4";
         switch (subType) {
-            case "Hall":       return "#EBF5FB";
-            case "Equipment":  return "#FEF9E7";
+            case "Hall":        return "#EBF5FB";
+            case "Equipment":   return "#FEF9E7";
             case "Coordinator": return "#EAFAF1";
-            case "Volunteer":  return "#FDEDEC";
-            default:           return "#F2F3F4";
+            case "Volunteer":   return "#FDEDEC";
+            default:            return "#F2F3F4";
         }
     }
 }

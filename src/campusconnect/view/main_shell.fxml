@@ -3,11 +3,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<!-- BorderPane is the whole app shell after login -->
-<!-- FIX: Added fx:id="mainShell" so your loadCenterScreen method works -->
+<!-- BorderPane is the whole app shell after login. Its centre is filled by Navigator
+     (dashboard.fxml first, then whichever screen the user opens). -->
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:id="mainShell"
-            fx:controller="campusconnect.controller.DashboardController"
+            fx:controller="campusconnect.controller.ShellController"
             prefWidth="1100" prefHeight="680">
 
     <!-- TOP: MenuBar -->
@@ -21,7 +21,7 @@
             <Menu text="Activity">
                 <MenuItem text="New Activity"   onAction="#handleNewActivity" />
                 <MenuItem text="Approve"        onAction="#handleApproveActivity" />
-                <MenuItem text="Cancel Activity" onAction="#handleDeleteActivity" />
+                <MenuItem text="Cancel Activity" onAction="#handleCancelActivity" />
             </Menu>
             <Menu text="Resources">
                 <MenuItem text="View Gallery"   onAction="#handleOpenResources" />
@@ -46,21 +46,6 @@
             <Button text="Reports"      onAction="#handleOpenReports"   maxWidth="Infinity" />
         </VBox>
     </left>
-
-    <!-- CENTER: Swapped out dynamically by controllers -->
-    <center>
-        <VBox spacing="10" style="-fx-padding: 10;">
-            <!-- FIX: Added the missing search field that your Java controller expects -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Search Activities:" style="-fx-font-weight: bold;" />
-                <TextField fx:id="searchField" promptText="Type to search..." HBox.hgrow="ALWAYS" />
-            </HBox>
-
-            <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
-                <ListView fx:id="activityListView" />
-            </ScrollPane>
-        </VBox>
-    </center>
 
     <!-- BOTTOM: Status bar -->
     <bottom>

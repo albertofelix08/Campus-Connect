@@ -30,12 +30,12 @@
                visible="false">
         <VBox spacing="12" maxWidth="400"
               style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 8;">
-            <Label text="⚠  Scheduling Conflict Detected"
+            <Label fx:id="conflictTitleLabel" text="⚠  Scheduling Conflict Detected"
                    style="-fx-font-size: 15; -fx-font-weight: bold; -fx-text-fill: #C0392B;" />
             <Label fx:id="conflictDetailLabel"
                    text="This resource is already booked for that date and time slot."
                    wrapText="true" />
-            <Label text="Please choose a different resource or change the activity's time slot."
+            <Label text="Pick a different resource, or adjust the activity's date / time slot."
                    wrapText="true" style="-fx-text-fill: #7F8C8D;" />
             <HBox spacing="10">
                 <Button text="OK, go back" onAction="#handleConflictCancel"

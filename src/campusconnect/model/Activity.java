@@ -76,6 +76,6 @@ public class Activity {
 
     @Override
     public String toString() {
-        return title + " [" + category + "] - " + status;
+        return title + " [" + (category != null ? category : "—") + "] - " + status;
     }
 }

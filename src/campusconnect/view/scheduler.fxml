@@ -13,6 +13,11 @@
     <HBox spacing="10" style="-fx-alignment: center-left;">
         <Label text="Filter by Venue:" />
         <ComboBox fx:id="venueFilterCombo" onAction="#handleVenueFilter" prefWidth="220" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="◀ Prev"  onAction="#handlePrev" />
+        <Button text="Today"   onAction="#handleToday" />
+        <Button text="Next ▶"  onAction="#handleNext" />
+        <Label fx:id="rangeLabel" style="-fx-font-weight: bold;" />
     </HBox>
 
     <!-- Calendar grid — built dynamically in the controller -->

@@ -1,13 +1,11 @@
 package campusconnect.controller;
 
+import campusconnect.Navigator;
 import campusconnect.model.Activity;
-import campusconnect.store.DataStore;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,17 +30,18 @@ public class ConductController implements Initializable {
     @FXML private TextArea  remarksArea;
     @FXML private Label     errorLabel;
 
-    private DataStore store = DataStore.getInstance();
     private Activity currentActivity;
-    private BorderPane mainShell;
+    private boolean programmaticChange = false;   // true while WE move the toggle (loading / snapping back)
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Guard illegal status jumps — only allow forward transitions
         statusGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            if (programmaticChange) return;
+
             if (newVal == null) {
-                // Don't allow deselecting all
-                oldVal.setSelected(true);
+                // Clicking the selected button would deselect everything — put it back
+                if (oldVal != null) selectQuietly((ToggleButton) oldVal);
                 return;
             }
             if (currentActivity == null) return;
@@ -51,11 +50,11 @@ public class ConductController implements Initializable {
             String target  = ((ToggleButton) newVal).getText();
 
             if (!isValidTransition(current, target)) {
-                errorLabel.setText("Cannot move from \"" + current + "\" to \"" + target + "\" directly.");
-                // snap back to the correct button
-                getButtonForStatus(current).setSelected(true);
+                showMessage("Cannot move from \"" + current + "\" to \"" + target + "\" directly.", false);
+                // snap back to whatever was selected before this click
+                selectQuietly(oldVal != null ? (ToggleButton) oldVal : getButtonForStatus(current));
             } else {
-                errorLabel.setText("");
+                showMessage("", false);
             }
         });
     }
@@ -77,28 +76,34 @@ public class ConductController implements Initializable {
             remarksArea.setText(activity.getRemarks());
         }
 
-        getButtonForStatus(activity.getStatus()).setSelected(true);
-    }
-
-    public void setShell(BorderPane shell) {
-        this.mainShell = shell;
+        // Show the CURRENT status without tripping the transition guard
+        // (it used to fire "Cannot move from Proposed to Proposed" the moment the screen opened)
+        selectQuietly(getButtonForStatus(activity.getStatus()));
+        showMessage("", false);
     }
 
     @FXML
     private void handleSaveChanges(ActionEvent event) {
         if (currentActivity == null) return;
 
-        // Validate attendance field
+        // Validate attendance field before touching the activity
         String attendanceText = actualAttendanceField.getText().trim();
-        if (!attendanceText.isEmpty()) {
+        int attendance = 0;
+        boolean hasAttendance = !attendanceText.isEmpty();
+        if (hasAttendance) {
             try {
-                int attendance = Integer.parseInt(attendanceText);
-                currentActivity.setActualParticipants(attendance);
+                attendance = Integer.parseInt(attendanceText);
             } catch (NumberFormatException e) {
-                errorLabel.setText("Attendance must be a number.");
+                showMessage("Attendance must be a whole number.", false);
+                return;
+            }
+            if (attendance < 0) {
+                showMessage("Attendance can't be negative.", false);
                 return;
             }
         }
+
+        if (hasAttendance) currentActivity.setActualParticipants(attendance);
 
         // Save selected status
         ToggleButton selectedBtn = (ToggleButton) statusGroup.getSelectedToggle();
@@ -107,24 +112,19 @@ public class ConductController implements Initializable {
         }
 
         currentActivity.setRemarks(remarksArea.getText().trim());
-        errorLabel.setText("Changes saved.");
+        showMessage("Changes saved.", true);
     }
 
     @FXML
     private void handleBack(ActionEvent event) {
-        if (mainShell == null) return;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/campusconnect/view/dashboard.fxml"));
-            mainShell.setCenter(loader.load());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Navigator.showDashboard();
     }
 
     // Valid status flow: Proposed → Approved → Ongoing → Completed
     //                    Any → Cancelled
     private boolean isValidTransition(String from, String to) {
-        if (to.equals("Cancelled")) return true;
+        if (from == null || from.equals(to)) return true;   // staying put is always fine
+        if (to.equals("Cancelled")) return !from.equals("Completed") && !from.equals("Cancelled");
         switch (from) {
             case "Proposed":  return to.equals("Approved");
             case "Approved":  return to.equals("Ongoing") || to.equals("Proposed");
@@ -136,6 +136,7 @@ public class ConductController implements Initializable {
     }
 
     private ToggleButton getButtonForStatus(String status) {
+        if (status == null) return proposedBtn;
         switch (status) {
             case "Approved":  return approvedBtn;
             case "Ongoing":   return ongoingBtn;
@@ -143,5 +144,19 @@ public class ConductController implements Initializable {
             case "Cancelled": return cancelledBtn;
             default:          return proposedBtn;
         }
+    }
+
+    private void selectQuietly(ToggleButton button) {
+        programmaticChange = true;
+        try {
+            button.setSelected(true);
+        } finally {
+            programmaticChange = false;
+        }
+    }
+
+    private void showMessage(String text, boolean success) {
+        errorLabel.setStyle("-fx-text-fill: " + (success ? "#27AE60" : "red") + ";");
+        errorLabel.setText(text);
     }
 }

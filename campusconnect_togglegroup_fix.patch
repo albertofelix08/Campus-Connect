@@ -1,0 +1,34 @@
+diff --git a/src/campusconnect/view/activity_form.fxml b/src/campusconnect/view/activity_form.fxml
+index 10942d1..8161dde 100644
+--- a/src/campusconnect/view/activity_form.fxml
++++ b/src/campusconnect/view/activity_form.fxml
+@@ -7,6 +7,12 @@
+       fx:controller="campusconnect.controller.ActivityFormController"
+       spacing="15" style="-fx-padding: 20;">
+ 
++    <!-- Declared explicitly (rather than only referenced via "$categoryGroup") so
++         FXMLLoader actually injects it into the controller's @FXML categoryGroup field. -->
++    <fx:define>
++        <ToggleGroup fx:id="categoryGroup" />
++    </fx:define>
++
+     <Label text="New / Edit Activity" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+ 
+     <!-- Main form in a GridPane -->
+diff --git a/src/campusconnect/view/conduct.fxml b/src/campusconnect/view/conduct.fxml
+index 6fc8582..e0d3744 100644
+--- a/src/campusconnect/view/conduct.fxml
++++ b/src/campusconnect/view/conduct.fxml
+@@ -7,6 +7,12 @@
+       fx:controller="campusconnect.controller.ConductController"
+       spacing="15" style="-fx-padding: 20;">
+ 
++    <!-- Declared explicitly (rather than only referenced via "$statusGroup") so
++         FXMLLoader actually injects it into the controller's @FXML statusGroup field. -->
++    <fx:define>
++        <ToggleGroup fx:id="statusGroup" />
++    </fx:define>
++
+     <Label text="Activity Detail / Conduct" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+ 
+     <!-- Status toggle strip -->

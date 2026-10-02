@@ -12,7 +12,7 @@
     <!-- Report type selector -->
     <HBox spacing="10" style="-fx-alignment: center-left;">
         <Label text="Report Type:" />
-        <ChoiceBox fx:id="reportTypeChoice" onAction="#handleReportTypeChange" prefWidth="220" />
+        <ChoiceBox fx:id="reportTypeChoice" prefWidth="220" />
     </HBox>
 
     <!-- Summary strip -->
@@ -23,8 +23,6 @@
     </HBox>
 
     <!-- Report results -->
-    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-        <ListView fx:id="reportListView" prefHeight="400" />
-    </ScrollPane>
+    <ListView fx:id="reportListView" VBox.vgrow="ALWAYS" style="-fx-font-family: monospace;" />
 
 </VBox>
